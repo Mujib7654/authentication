@@ -1,0 +1,29 @@
+1st step:
+  to initialize npm
+  a. to do it manually:
+       npm init
+  b. else:
+       npm init -y
+
+Dependency:
+1. express: npm i express
+2. nodemon: npm i nodemon 
+3. mongoose: npm i mongoose
+
+Running command:
+1. node app.js
+2. nodemon app.js
+
+middleware:
+middleware function are function that have access to the request object(req), the response object(res), and the next function in the application request response cycle.
+
+the next function is a function in the express router which, when invocked, executes the middleware succeeding the current middleware.
+
+dotenv: secure your important credentials
+installation: npm i dotenv
+
+schema and model:
+a document schema is a json object that allows us to define the shape and content of documents and embedded documents in a collection.
+It defines the name of each item of data, and the type of data, whether it is string , integer and so on.
+
+model: collection
