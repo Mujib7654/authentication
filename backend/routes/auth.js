@@ -1,7 +1,10 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 require('../db/connectDB');
 const User = require('../model/userSchema');
+
 
 router.get('/', (req, res) =>{
     res.send(`Hello World from router!`)
@@ -49,11 +52,13 @@ router.get('/', (req, res) =>{
 router.post('/register', async(req, res) => {
     const {name, email, phone, password, work, cpassword} = req.body;
 
+    //check validation
     if(!name || !email || !phone || !password || !work || !cpassword)
     {
-        return res.status(422).json({error: "Please fill the field properly"});
+        return res.status(422).json({error: "Please fill all the fields properly"});
     }
 
+    //check user exists or not, password matched with cpassword, lastly create a document for the new user
     try {
         const userExist = await User.findOne({$or: [{ email: email }, { phone: phone }]});
 
@@ -63,10 +68,11 @@ router.post('/register', async(req, res) => {
             return res.status(422).json({error: `${duplicateField} Already Registered`});
         }
         else if (password != cpassword) {
-            return res.status(422).json({ error:"Passwords do not match!" });
+            return res.status(422).json({ error:"Password and Confirm Password does not match!" });
         }
         else{
             const user = new User({name, email, phone, password, work, cpassword});
+
             const userRegister = await user.save();
 
             if(userRegister){
@@ -75,6 +81,37 @@ router.post('/register', async(req, res) => {
         }
     } catch (err) {
         console.log(err);
+    }
+});
+
+router.post('/signin', async(req,res) => {
+    try {
+        const {email, password} = req.body;
+
+        //validation
+        if(!email || !password) {
+            return res.status(422).json({error: 'Please Fill All The Fields Properly'})
+        }
+        //check email and password match with our existing db
+        const userLogin = await User.findOne({email: email});
+
+        if(userLogin) {
+            const isMatch = bcrypt.compare(password, userLogin.password);
+            const token = await userLogin.generateAuthToken();
+            console.log(token);
+            if (!isMatch){
+                res.status(400).json({error: "Invalid Password"});
+            }
+            else{
+                res.status(200).json({message: "user signin successfully"});
+            }
+        }
+        else{
+            res.status(400).json({error: "Invalid email"});
+        }
+        
+    } catch (error) {
+        console.log(`${error}`)
     }
 });
 
