@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cookie = require('cookie');
 const router = express.Router();
 require('../db/connectDB');
 const User = require('../model/userSchema');
@@ -98,7 +99,15 @@ router.post('/signin', async(req,res) => {
         if(userLogin) {
             const isMatch = bcrypt.compare(password, userLogin.password);
             const token = await userLogin.generateAuthToken();
-            console.log(token);
+            // console.log(token);
+            //store jwt in cookie
+            
+            //res.cookie("cookieName", dataThatWeNeedToStore)
+            res.cookie("jwtoken", token,{
+                expires : new Date(Date.now() + 25892000000),
+                httpOnly : true
+            });
+
             if (!isMatch){
                 res.status(400).json({error: "Invalid Password"});
             }
