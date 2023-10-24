@@ -1,5 +1,6 @@
 //require express
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -7,6 +8,8 @@ require('dotenv').config();
 const app = express();
 
 const PORT = process.env.PORT;
+
+app.use(cors());
 
 //require db
 require('./db/connectDB');

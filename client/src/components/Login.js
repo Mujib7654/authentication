@@ -1,8 +1,48 @@
-import React from 'react';
+import React, {useState} from 'react';
 import loginpic from '../images/login.svg';
-import {NavLink} from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 
 const Login = () => {
+
+  const navigate = useNavigate();
+
+  const[email, setEmail] = useState('');
+  const[password, setPassword] = useState('');
+
+  const loginUser = async(e) => {
+    e.preventDefault();
+
+    const res = await fetch('http://localhost:5000/signin', {
+      method: "POST",
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email,
+        password
+      })
+    })
+
+    // const data = await res.json();
+    // console.log(data);
+    // if(data.status === 400|| data.status === 422 || !data ){
+    //   window.alert("Invalid Credentials");
+    // }
+    // else{
+    //   window.alert("Login successfully");
+    //   navigate('/')
+    // }
+    if (res.status === 200) {
+      window.alert("Login Successfully");
+      console.log("Login Successfully");
+      navigate('/');
+    } else {
+      const data = await res.json();
+      window.alert(data.error);
+      console.log(data.error); 
+    }
+  };
+
   return (
     <>
       <section className='sign-in'>
@@ -25,18 +65,19 @@ const Login = () => {
                   <label htmlFor='email'>
                     <i className='zmdi zmdi-email material-icons-name'></i>
                   </label>
-                  <input type='email' name='email' id='email' autoComplete='off' placeholder='Your Email'/>
+                  <input type='email' name='email' id='email' autoComplete='off' value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Your Email'/>
                 </div>
 
                 <div className='form-group'>
                   <label htmlFor='password'>
                     <i className='zmdi zmdi-lock material-icons-name'></i>
                   </label>
-                  <input type='password' name='password' id='password' autoComplete='off' placeholder='Your Password'/>
+                  <input type='password' name='password' id='password' autoComplete='off' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Your Password'/>
                 </div>
 
                 <div className='form-group form-button'>
-                  <input type='submit' name='signin' id='signin' className='form-submit' value='Log In'/>
+                  <input type='submit' name='signin' id='signin' className='form-submit' value='Log In' 
+                  onClick={loginUser}/>
                 </div>
               </form>
             </div>
