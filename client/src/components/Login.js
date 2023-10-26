@@ -23,15 +23,6 @@ const Login = () => {
       })
     })
 
-    // const data = await res.json();
-    // console.log(data);
-    // if(data.status === 400|| data.status === 422 || !data ){
-    //   window.alert("Invalid Credentials");
-    // }
-    // else{
-    //   window.alert("Login successfully");
-    //   navigate('/')
-    // }
     if (res.status === 200) {
       window.alert("Login Successfully");
       console.log("Login Successfully");

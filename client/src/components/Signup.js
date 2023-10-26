@@ -34,24 +34,23 @@ const Signup = () => {
 
   // const data = await res.json();
   // console.log(data);
-  // if(data.status === 422 || !data){
+  // if(res.status === 422 || !data){
   //   window.alert("Invalid Registration");
   //   console.log("Invalid Registration");
   // }
   // else{
   //   window.alert("Registration Successful!");
   //   console.log("Successfully Registered");
-
   //   navigate('/login');
   // }
-  if (res.status === 200) {
-    window.alert("Registered successfully");
-    console.log("Successfully Registered");
-    navigate('/');
-  } else {
-    const data = await res.json();
+  const data = await res.json();
+  if (res.status === 422 || !data) {
     window.alert(data.error);
     console.log(data.error); 
+  } else {
+    window.alert("Registered successfully");
+    console.log("Successfully Registered");
+    navigate('/login');
   }
 }
   return (

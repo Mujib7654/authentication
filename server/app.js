@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 //create a variable to access express methods and properties
@@ -9,6 +10,7 @@ const app = express();
 
 const PORT = process.env.PORT;
 
+app.use(cookieParser());
 app.use(cors());
 
 //require db
@@ -19,19 +21,19 @@ app.use(require('./routes/auth'));
 
 
 
-const middleware = (req, res, next) => {
-    console.log(`hello middleware`);
-    next();
-}
+// const middleware = (req, res, next) => {
+//     console.log(`hello middleware`);
+//     next();
+// }
 
 //app.get(path,callback)
 app.get('/', (req, res) =>{
     res.send(`Hello World!`)
 });
 
-app.get('/about', middleware, (req, res) =>{
-    res.send(`Hello about!`)
-});
+// app.get('/about', middleware, (req, res) =>{
+//     res.send(`Hello about!`)
+// });
 
 app.get('/contact', (req, res) =>{
     res.send(`Hello contact!`)

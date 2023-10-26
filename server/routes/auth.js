@@ -5,6 +5,7 @@ const cookie = require('cookie');
 const router = express.Router();
 require('../db/connectDB');
 const User = require('../model/userSchema');
+const authenticate = require('../middleware/Authenticate');
 
 
 router.get('/', (req, res) =>{
@@ -98,20 +99,21 @@ router.post('/signin', async(req,res) => {
 
         if(userLogin) {
             const isMatch = bcrypt.compare(password, userLogin.password);
-            const token = await userLogin.generateAuthToken();
-            // console.log(token);
-            //store jwt in cookie
             
-            //res.cookie("cookieName", dataThatWeNeedToStore)
-            res.cookie("jwtoken", token,{
-                expires : new Date(Date.now() + 25892000000),
-                httpOnly : true
-            });
 
             if (!isMatch){
                 res.status(400).json({error: "Invalid Password"});
             }
             else{
+                const token = await userLogin.generateAuthToken();
+                // console.log(token);
+                //store jwt in cookie
+                
+                //res.cookie("cookieName", dataThatWeNeedToStore)
+                res.cookie("jwtoken", token,{
+                    expires : new Date(Date.now() + 25892000000),
+                    httpOnly : true
+                });
                 res.status(200).json({message: "user signin successfully"});
             }
         }
@@ -122,6 +124,11 @@ router.post('/signin', async(req,res) => {
     } catch (error) {
         console.log(`${error}`)
     }
+});
+
+router.get('/about', authenticate, (req,res) => {
+    console.log("My about data");
+    res.send(req.rootUser);
 });
 
 module.exports = router;
