@@ -8,7 +8,7 @@ const About = () => {
 
   const callAboutPage = async() => {
     try {
-      const res = await fetch('http://localhost:5000/about', {
+      const res = await fetch('https://authentication-tj6e.onrender.com/about', {
         method : 'GET',
         headers : {
           Accept : 'application/json',

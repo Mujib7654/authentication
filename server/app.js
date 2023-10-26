@@ -11,7 +11,13 @@ const app = express();
 const PORT = process.env.PORT;
 
 app.use(cookieParser());
-app.use(cors());
+// app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true, // Allow credentials
+  };
+  
+app.use(cors(corsOptions));
 
 //require db
 require('./db/connectDB');
