@@ -20,11 +20,13 @@ const Login = () => {
       body: JSON.stringify({
         email,
         password
-      })
+      }),
     })
 
     if (res.status === 200) {
       window.alert("Login Successfully");
+      const data = await res.json();
+      localStorage.setItem("jwt", data.token);
       console.log("Login Successfully");
       navigate('/');
     } else {

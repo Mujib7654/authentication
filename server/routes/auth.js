@@ -1,11 +1,14 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const cookie = require('cookie');
 const router = express.Router();
 require('../db/connectDB');
 const User = require('../model/userSchema');
 const authenticate = require('../middleware/Authenticate');
+
+router.use(cookieParser());
 
 
 router.get('/', (req, res) =>{
@@ -99,36 +102,30 @@ router.post('/signin', async(req,res) => {
 
         if(userLogin) {
             const isMatch = bcrypt.compare(password, userLogin.password);
-            
-
             if (!isMatch){
                 res.status(400).json({error: "Invalid Password"});
             }
             else{
                 const token = await userLogin.generateAuthToken();
                 // console.log(token);
-                //store jwt in cookie
-                
-                //res.cookie("cookieName", dataThatWeNeedToStore)
-                res.cookie("jwtoken", token,{
-                    expires : new Date(Date.now() + 25892000000),
-                    httpOnly : true
-                });
-                res.status(200).json({message: "user signin successfully"});
+                res.status(200).json({message: "user signin successfully", token});
             }
         }
         else{
             res.status(400).json({error: "Invalid email"});
         }
-        
     } catch (error) {
         console.log(`${error}`)
     }
 });
 
-router.get('/about', authenticate, (req,res) => {
-    console.log("My about data");
-    res.send(req.rootUser);
+router.get("/about", authenticate, (req, res) => {
+    try {
+      res.send(req.rootUser);
+    } catch (error) {
+      res.status(500).json({ error: "Something went wrong or invalid token" });
+      console.log(`${error}`);
+    }
 });
 
 module.exports = router;

@@ -8,11 +8,12 @@ const About = () => {
 
   const callAboutPage = async() => {
     try {
-      const res = await fetch('https://authentication-tj6e.onrender.com/about', {
+      const res = await fetch('http://localhost:5000/about', {
         method : 'GET',
         headers : {
           Accept : 'application/json',
-          'Content-Type' : 'application/json'
+          'Content-Type' : 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
         credentials : 'include'
       });
@@ -20,12 +21,12 @@ const About = () => {
       const data = await res.json();
       console.log(data);
 
-      if(res.status != 200){
+      if(res.status !== 200){
         const error = new error(res.error);
         throw error;
       };
     } catch (error) {
-      console.log(error);
+      console.log(`${error}`);
       navigate('/login')
     };
   };

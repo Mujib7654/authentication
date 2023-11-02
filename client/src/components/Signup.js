@@ -29,7 +29,7 @@ const Signup = () => {
       },
       body: JSON.stringify({
         name, email, phone, work, password, cpassword
-    })
+      }),
   });
 
   // const data = await res.json();

@@ -6,33 +6,33 @@ const userSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            required : true
+            required: true
         },
         email: {
             type: String,
-            require : true
+            require: true
         },
         phone: {
             type: Number,
-            require : true
+            require: true
         },
         work: {
             type: String,
-            require : true
+            require: true
         },
         password: {
             type: String,
-            require : true
+            require: true
         },
         cpassword: {
             type: String,
-            require : true
+            require: true
         },
-        tokens : [
+        tokens: [
             {
-                token:{
+                token: {
                     type: String,
-                    required:true
+                    required: true
                 }
             }
         ]
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
 
 //password hashing
 userSchema.pre('save', async function (next) {
-    if (this.isModified('password')){
+    if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 12);
         this.cpassword = await bcrypt.hash(this.cpassword, 12);
     }
@@ -52,9 +52,9 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.generateAuthToken = async function () {
     try {
         //jwt.sign(payload-it must be unique, secretorPrivacykety)
-        let token = jwt.sign({_id: this._id}, process.env.SECRET_KEY);
-        this.tokens = this.tokens.concat({token:token});
-        this.save();
+        let token = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
+        this.tokens = this.tokens.concat({ token: token });
+        await this.save();
         return token;
     } catch (error) {
         console.log(`${error}`);
